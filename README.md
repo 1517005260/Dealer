@@ -1,15 +1,117 @@
-Forked From: https://github.com/ZJU-DIVER/Dealer.git
+# Dealer: 基于差分隐私的端到端模型市场
 
-# Dealer: An End-to-End Model Marketplace with Differential Privacy
+## 项目简介
 
-Code for implementation of [Demonstration of Dealer: An End-to-End Model Marketplace with Differential Privacy](http://www.vldb.org/pvldb/vol14/p2747-zhang.pdf)
+**Dealer** 是一个基于差分隐私的端到端机器学习模型市场系统，连接数据拥有者、代理商（经纪人）和模型购买者三方参与者。该系统通过创新的定价机制和补偿机制，实现了隐私保护与数据价值变现的平衡。
 
-**Dealer**, an en**D**-to-end mod**e**l m**a**rketp**l**ace with diff**e**rential p**r**ivacy, is a marketplace for machine learning models. Dealer consists of three entities, data owners, the broker, and model buyers. Data owners receive compensation for their data usages allocated by the broker; The broker collects data from data owners, builds and sells models to model buyers; Model buyers buy their target models from the broker.
+### 什么是 Dealer？
 
-Reference: [[Demo]]() [[Theories]](http://www.vldb.org/pvldb/vol14/p957-liu.pdf)
+想象一个这样的场景：
+- **数据拥有者**：拥有有价值的数据，但不知道如何变现，同时担心隐私泄露
+- **模型购买者**：需要高质量的机器学习模型，但缺乏足够的训练数据
+- **代理商**：作为中间方，收集数据、训练模型并销售给需要的买家
 
-### Prerequisites
+Dealer 就是为了解决这种三方需求而设计的智能市场平台。它不仅仅是一个简单的交易平台，而是一个考虑了隐私保护、公平补偿和防套利的完整生态系统。
 
-- Back End: Django
-- Font End: React
+### 系统特色
+
+1. **隐私保护优先**：使用差分隐私（Differential Privacy）技术确保数据隐私
+2. **公平补偿机制**：基于 Shapley 值理论的数据贡献度评估
+3. **智能定价策略**：防套利的多版本模型定价机制
+4. **端到端流程**：覆盖从数据收集到模型销售的完整链路
+
+## 理论基础
+
+### 核心概念
+
+#### 1. 差分隐私（Differential Privacy）
+差分隐私是一种严格的数学隐私保护框架，通过在模型训练过程中添加经过精确计算的噪声，确保单个数据记录的隐私不会被泄露。
+
+**形式化定义**：对于任意两个仅相差一条记录的数据集 S 和 S'，随机化算法 A 满足 (ε,δ)-差分隐私，当且仅当：
+
+```
+P[A(S) ∈ OUT] ≤ e^ε · P[A(S') ∈ OUT] + δ
+```
+
+其中：
+- ε (epsilon)：隐私预算，值越小隐私保护越强
+- δ (delta)：隐私泄露概率上界
+
+#### 2. Shapley 值理论
+Shapley 值是合作博弈论中的一个重要概念，用于公平分配合作收益。在 Dealer 中，它被用来评估每个数据拥有者对最终模型性能的边际贡献。
+
+**计算公式**：
+```
+SV_i = (1/n) ∑_{S⊆{z_1,...,z_n}\z_i} [U(S∪{z_i}) - U(S)] / C(n-1, |S|)
+```
+
+其中：
+- SV_i：数据拥有者 i 的 Shapley 值
+- U(S)：数据集合 S 的效用函数值
+- n：数据拥有者总数
+
+#### 3. 无套利定价
+为了防止模型购买者通过组合低价模型来规避高价模型的策略，Dealer 采用无套利定价机制，满足：
+
+1. **单调性**：隐私预算越高，价格越高
+2. **次可加性**：组合模型的价格不低于单独购买的总价
+
+### 关键算法
+
+#### 收入最大化算法
+代理商通过动态规划算法求解最优定价策略：
+
+```
+MAX[k,j] = max{MAX[k-1,j']} + MR[k,j]
+```
+
+约束条件：
+- p_{k-1}[j'] ≤ p_k[j] （单调性）
+- p_{k-1}[j']/ε_{k-1} ≥ p_k[j]/ε_k （次可加性）
+
+#### Shapley 覆盖最大化
+在给定预算下，选择数据子集使 Shapley 值覆盖率最大化。
+
+### 实际应用场景
+
+1. **医疗数据共享**：医院可以安全共享患者数据用于AI诊断模型训练
+2. **金融风控**：银行合作训练反欺诈模型，同时保护客户隐私
+3. **智能交通**：城市间共享交通数据，优化智能交通系统
+4. **商业智能**：企业联合训练市场预测模型，获得数据使用补偿
+
+## 技术架构
+
+- **后端**：Django + Python（机器学习算法实现）
+- **前端**：React + Ant Design（用户界面）
+- **数据库**：SQLite（演示数据存储）
+- **机器学习**：scikit-learn + TensorFlow（模型训练）
+
+## 论文引用
+
+本项目基于以下研究论文：
+
+- **[Demo Paper]** "Demonstration of Dealer: An End-to-End Model Marketplace with Differential Privacy" (VLDB 2021)
+- **[Theory Paper]** "Dealer: An End-to-End Model Marketplace with Differential Privacy" 
+
+原始项目来源：[ZJU-DIVER/Dealer](https://github.com/ZJU-DIVER/Dealer.git)
+
+## 快速开始
+
+### 环境要求
+- Node.js 14+（前端）
+- Python 3.7+（后端）
+
+### 安装步骤
+详细的安装和使用说明请参考：
+- [后端安装指南](./backend/README.md)
+- [前端安装指南](./frontend/README.md)
+
+## 项目结构
+```
+Dealer/
+├── backend/          # Django 后端服务
+├── frontend/         # React 前端应用
+├── assets/          # 论文和相关资源
+└── README.md        # 项目文档
+```
 
