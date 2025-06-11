@@ -8,10 +8,11 @@ from dealer.utils import AMP, AMP_shapley, Shapley, Price, Gen_Shapley, Draw
 import math
 
 
-# Create your views here.
+# 创建视图函数
 
 
 def http_response(success, data):
+    """构建HTTP响应格式"""
     res = {
         "success": success,
         "payload": data
@@ -20,11 +21,13 @@ def http_response(success, data):
 
 
 def query_cancer(request):
+    """查询所有癌症训练数据"""
     data = serializers.serialize('python', models.TrainCancer.objects.all())
     return http_response(True, data)
 
 
 def query_cancer_by_id(request):
+    """根据ID查询癌症数据"""
     id_list = json.loads(request.body)["id"]
     data = []
     for id in id_list:
@@ -33,11 +36,13 @@ def query_cancer_by_id(request):
 
 
 def query_chess(request):
+    """查询所有国际象棋训练数据"""
     data = serializers.serialize('python', models.TrainChess.objects.all())
     return http_response(True, data)
 
 
 def query_chess_by_id(request):
+    """根据ID查询国际象棋数据"""
     id_list = json.loads(request.body)["id"]
     data = []
     for id in id_list:
@@ -46,11 +51,13 @@ def query_chess_by_id(request):
 
 
 def query_iris(request):
+    """查询所有鸢尾花训练数据"""
     data = serializers.serialize('python', models.TrainIris.objects.all())
     return http_response(True, data)
 
 
 def query_amp(request):
+    """执行AMP算法查询"""
     dataset = json.loads(request.body)["dataset"]
     num_repeats = json.loads(request.body)["num_repeats"]
     epsilon = json.loads(request.body)["epsilon"]
@@ -59,6 +66,7 @@ def query_amp(request):
 
 
 def query_amp_shapley(request):
+    """执行AMP Shapley算法查询"""
     dataset = json.loads(request.body)["dataset"]
     num_repeats = json.loads(request.body)["num_repeats"]
     shapley_mode = json.loads(request.body)["shapley_mode"]
@@ -87,6 +95,7 @@ def query_amp_shapley(request):
 
 
 def query_compensation(request):
+    """查询补偿计算"""
     dataset = json.loads(request.body)["dataset"]
     idx = json.loads(request.body)["id"]
     bp = json.loads(request.body)["bp"]
@@ -147,6 +156,7 @@ def query_compensation(request):
 
 
 def write_survey(request):
+    """写入调研信息"""
     survey = json.loads(request.body)['survey']
     models.SurveyInfo.objects.all().delete()
     for sur in survey:
@@ -166,6 +176,7 @@ def write_survey(request):
 
 
 def release_model(request):
+    """发布模型"""
     idx = json.loads(request.body)['id']
     models.ModelInfo.objects.filter(id=idx).update(state=1)
     data = serializers.serialize('python', models.ModelInfo.objects.all())
@@ -174,6 +185,7 @@ def release_model(request):
 
 
 def query_all_model(request):
+    """查询所有已发布的模型"""
     result = models.ModelInfo.objects.filter(state=1)
 
     model = []
@@ -190,6 +202,7 @@ def query_all_model(request):
 
 
 def query_limited_model(request):
+    """查询有限制条件的模型"""
     dataset = json.loads(request.body)['dataset']
     budget = json.loads(request.body)['budget']
     covexp = json.loads(request.body)['covexp']
@@ -224,5 +237,6 @@ def query_limited_model(request):
 
 
 def delete_all_model(request):
+    """删除所有模型"""
     models.ModelInfo.objects.all().delete()
     return http_response(True, [])

@@ -54,7 +54,7 @@ def eval_monte_carlo(dataset, index, sample_number):
             if dataset == 'cancer':
                 training_features, testing_features, training_labels, testing_labels = Shapley.loadCancer_(index[:j])
             elif dataset == "chess":
-                training_features, testing_features, training_labels, testing_labels = Shapley.loadCancer_(index[:j])
+                training_features, testing_features, training_labels, testing_labels = Shapley.loadChess_(index[:j])
             else:
                 training_features, testing_features, training_labels, testing_labels = Shapley.loadIris_(index[:j])
             current_accuracy = model.model(training_features, training_labels)

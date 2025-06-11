@@ -8,9 +8,9 @@ from itertools import product
 from decimal import Decimal
 import dealer.utils.Shapley as Shapley
 
-# To run this script, please input command line
-# python gridsearch.py [alg_name] [dataset_name] [random_proj] [SVM] [eps_list...]
-# To get the best performance, first run this:
+# 运行此脚本，请输入命令行参数：
+# python gridsearch.py [算法名] [数据集名] [随机投影] [SVM] [epsilon列表...]
+# 为获得最佳性能，请先运行：
 # export OMP_NUM_THREADS=1
 result_root = '.'
 lbls_dim = 2
@@ -19,21 +19,22 @@ sparse_datasets = ['farm', 'dexter', 'dorothea', 'realsim', 'rcv1', 'news20']
 data2shape = {'farm': (4143, 54877), 'dexter': (300, 20000), 'dorothea': (800, 100000), 'realsim': (72309, 20958),
               'rcv1': (50000, 47236), 'news20': (8870, 117049)}
 
-# How many times to repeat each experiment
+# 每个实验重复的次数
 NUM_REPEATS = 1
 
-# How many cores to use
+# 使用的核心数
 CORES = 40
 
-# The default clipping factor to use
+# 使用的默认裁剪因子
 L = 1
 L1_L = 1
 
 
-# Epsilons to test
+# 要测试的epsilon值
 
 
 def build_binary_ys(vec_ys):
+    """构建二进制标签数组"""
     # print('vec_ys.shape', vec_ys.shape)
     # print('vec_ys:', vec_ys)
     binary_ys = []
@@ -45,10 +46,12 @@ def build_binary_ys(vec_ys):
 
 
 def dict_product(dicts):
+    """生成字典的笛卡尔积"""
     return (dict(zip(dicts, x)) for x in product(*dicts.values()))
 
 
 def progress_bar(pct):
+    """显示进度条"""
     i = int(pct)
     sys.stdout.write('\r')
     sys.stdout.write("[%-20s] %d%%" % ('=' * int(i / 5), i))
@@ -56,6 +59,7 @@ def progress_bar(pct):
 
 
 def approximate_minima_perturbation(training_features, training_labels, eps, delta, hyper, model):
+    """近似最小扰动算法"""
     if model == 'LR':
         theta, gamma = ApproximateMinimaPerturbationLR.run_classification(training_features, training_labels, eps,
                                                                           delta,
@@ -84,6 +88,7 @@ def approximate_minima_perturbation(training_features, training_labels, eps, del
 
 
 def create_directory(directory_name):
+    """创建目录"""
     try:
         os.stat(directory_name)
     except:
@@ -91,7 +96,8 @@ def create_directory(directory_name):
 
 
 def amp_main(chose_dataset, all_eps_list, num_repeats=None):
-    print("Starting...")
+    """AMP算法主函数"""
+    print("开始执行...")
     np.seterr(over='ignore')
 
     create_directory(result_root + "/results")
@@ -105,7 +111,7 @@ def amp_main(chose_dataset, all_eps_list, num_repeats=None):
     alg_name = 'AMP'
     model_name = 'SVM'
 
-    print("Loading Dataset...")
+    print("加载数据集...")
 
     result_location = result_root + '/results/rough_results/' + model_name
 

@@ -1,17 +1,17 @@
-"""dealer_demo URL Configuration
+"""dealer_demo URL配置
 
-The `urlpatterns` list routes URLs to views. For more information please see:
+urlpatterns列表将URL路由到视图。更多信息请参见：
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+示例：
+函数视图
+    1. 添加导入：from my_app import views
+    2. 添加URL到urlpatterns：path('', views.home, name='home')
+基于类的视图
+    1. 添加导入：from other_app.views import Home
+    2. 添加URL到urlpatterns：path('', Home.as_view(), name='home')
+包含另一个URLconf
+    1. 导入include()函数：from django.urls import include, path
+    2. 添加URL到urlpatterns：path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
 from django.urls import path

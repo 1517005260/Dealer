@@ -57,9 +57,6 @@ python manage.py makemigrations
 
 # 执行数据库迁移
 python manage.py migrate
-
-# 导入初始数据（可选）
-python manage.py loaddata initial_data.json
 ```
 
 ### 4. 启动开发服务器
@@ -220,9 +217,6 @@ python manage.py migrate
 ```bash
 # 运行所有测试
 python manage.py test
-
-# 运行特定测试
-python manage.py test dealer.tests.test_shapley
 ```
 
 ## 部署

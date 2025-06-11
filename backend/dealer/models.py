@@ -1,7 +1,7 @@
 from django.db import models
 
 
-# Create your models here.
+# 创建数据模型
 class TrainCancer(models.Model):
     id = models.IntegerField(null=False, primary_key=True)
     radius_mean = models.FloatField(null=False)

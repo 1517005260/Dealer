@@ -54,11 +54,17 @@ export default class Owner extends Component {
         this.setState({loadingTable:true});
         axios.get(`/dealer/${dataset}/all`).then(
 			response => {
-                this.setState({dataset:dataset, allData:response.data.payload, loadingTable:false});
-                //console.log("请求成功，向数据表传入的数据 in getAllData", this.state.dataset, this.state.allData);
+                console.log("请求成功，向数据表传入的数据 in getAllData", response.data);
+                if (response.data.success && response.data.payload) {
+                    this.setState({dataset:dataset, allData:response.data.payload, loadingTable:false});
+                } else {
+                    console.log("数据格式错误或无数据");
+                    this.setState({loadingTable:false});
+                }
             },
 		    error => {
-                // console.log("获取数据失败，向数据表传入的数据 in getAllData", this.state.dataset, this.state.allData);
+                console.log("获取数据失败，错误信息:", error);
+                this.setState({loadingTable:false});
             }
         )
     }

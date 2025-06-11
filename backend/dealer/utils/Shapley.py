@@ -1,8 +1,24 @@
 import numpy as np
 from dealer import models
 
+"""
+Shapley值计算和子集选择算法模块
+实现论文中的多种子集选择算法：随机、贪心、动态规划等
+用于在制造预算约束下最大化Shapley覆盖率
+"""
 
 def randslt(SV, ec, budsum, X_train=None, y_train=None):
+    """
+    随机子集选择算法
+    参数:
+        SV: Shapley值列表
+        ec: 补偿成本列表  
+        budsum: 制造预算
+        X_train: 训练数据特征
+        y_train: 训练数据标签
+    返回:
+        最优Shapley值和，子集特征，子集标签
+    """
     idx_lst = np.arange(len(SV))
     np.random.shuffle(idx_lst)
     idx_subset = []
@@ -20,11 +36,15 @@ def randslt(SV, ec, budsum, X_train=None, y_train=None):
             y_subset.append(y_train[idx])
         else:
             break
-    print('random selsection:', len(X_subset), optsum, idx_subset)
+    print('随机选择:', len(X_subset), optsum, idx_subset)
     return optsum, X_subset, y_subset
 
 
 def get_ratio(SV, ec):
+    """
+    计算Shapley值与补偿成本的比率
+    用于贪心算法的排序依据
+    """
     ratio = []
     for i in range(len(SV)):
         ratio.append((i, SV[i] / ec[i]))
@@ -34,6 +54,18 @@ def get_ratio(SV, ec):
 
 
 def greedy(SV, ec, budsum, X_train, y_train):
+    """
+    贪心子集选择算法 - 验证论文算法6
+    按Shapley值/成本比率从高到低选择数据拥有者
+    参数:
+        SV: Shapley值列表
+        ec: 补偿成本列表
+        budsum: 制造预算  
+        X_train: 训练数据特征
+        y_train: 训练数据标签
+    返回:
+        最优Shapley值和，子集特征，子集标签
+    """
     sorted_ratio = get_ratio(SV, ec)
 
     X_subset = []
@@ -50,7 +82,7 @@ def greedy(SV, ec, budsum, X_train, y_train):
             y_subset.append(y_train[idx])
         else:
             break
-    print('greedy:', len(X_subset), SVsum, idx_subset)
+    print('贪心算法:', len(X_subset), SVsum, idx_subset)
 
     return SVsum, X_subset, y_subset
 
@@ -262,13 +294,13 @@ def loadChess_(valid_idx=None):
     if valid_idx is None:
         valid_idx = []
 
-    train_cancer = np.array([list(i) for i in models.TrainCancer.objects.all().values_list()])
-    test_cancer = np.array([list(i) for i in models.TestCancer.objects.all().values_list()])
+    train_chess = np.array([list(i) for i in models.TrainChess.objects.all().values_list()])
+    test_chess = np.array([list(i) for i in models.TestChess.objects.all().values_list()])
 
     X_train = []
     y_train = []
     idx = 0
-    for item in train_cancer:
+    for item in train_chess:
         if idx not in valid_idx:
             idx += 1
             continue
@@ -276,8 +308,8 @@ def loadChess_(valid_idx=None):
         X_train.append(item[1:-1])
         y_train.append(item[-1])
 
-    X_test = test_cancer[:, 1:-1]
-    y_test = test_cancer[:, -1]
+    X_test = test_chess[:, 1:-1]
+    y_test = test_chess[:, -1]
 
     return np.array(X_train), np.array(X_test), np.array(y_train), np.array(y_test)
 
@@ -286,13 +318,13 @@ def loadIris_(valid_idx=None):
     if valid_idx is None:
         valid_idx = []
 
-    train_cancer = np.array([list(i) for i in models.TrainIris.objects.all().values_list()])
-    test_cancer = np.array([list(i) for i in models.TestIris.objects.all().values_list()])
+    train_iris = np.array([list(i) for i in models.TrainIris.objects.all().values_list()])
+    test_iris = np.array([list(i) for i in models.TestIris.objects.all().values_list()])
 
     X_train = []
     y_train = []
     idx = 0
-    for item in train_cancer:
+    for item in train_iris:
         if idx not in valid_idx:
             idx += 1
             continue
@@ -300,8 +332,8 @@ def loadIris_(valid_idx=None):
         X_train.append(item[1:-1])
         y_train.append(item[-1])
 
-    X_test = test_cancer[:, 1:-1]
-    y_test = test_cancer[:, -1]
+    X_test = test_iris[:, 1:-1]
+    y_test = test_iris[:, -1]
 
     return np.array(X_train), np.array(X_test), np.array(y_train), np.array(y_test)
 

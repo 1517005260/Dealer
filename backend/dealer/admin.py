@@ -3,7 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 from dealer.resource import *
 
 
-# Register your models here.
+# 注册模型到管理后台
 
 @admin.register(TrainCancer)
 class TrainCancerAdmin(ImportExportModelAdmin):
